@@ -1,0 +1,557 @@
+/* assets/css/style.css — Student Grading System */
+
+/* ============================================
+   CSS VARIABLES & RESET
+   ============================================ */
+:root {
+    --primary:      #3b5bdb;
+    --primary-dark: #2f4ac0;
+    --primary-light:#eef2ff;
+    --secondary:    #495057;
+    --success:      #2f9e44;
+    --success-bg:   #ebfbee;
+    --danger:       #c92a2a;
+    --danger-bg:    #fff5f5;
+    --warning:      #e67700;
+    --warning-bg:   #fff9db;
+    --info:         #0c8599;
+    --info-bg:      #e3fafc;
+    --sidebar-w:    240px;
+    --sidebar-bg:   #1c2333;
+    --sidebar-text: #adb5bd;
+    --sidebar-active: #3b5bdb;
+    --bg:           #f4f6fb;
+    --card-bg:      #ffffff;
+    --border:       #e9ecef;
+    --text:         #212529;
+    --text-muted:   #6c757d;
+    --radius:       10px;
+    --shadow:       0 2px 12px rgba(0,0,0,0.08);
+    --shadow-lg:    0 8px 30px rgba(0,0,0,0.12);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+a { color: var(--primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ============================================
+   LOGIN PAGE
+   ============================================ */
+.login-body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #1c2333 0%, #2c3e70 100%);
+    padding: 20px;
+}
+
+.login-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 48px 44px;
+    width: 420px;
+    max-width: 100%;
+    box-shadow: var(--shadow-lg);
+}
+
+.login-logo {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.login-logo .icon {
+    width: 64px; height: 64px;
+    background: var(--primary);
+    border-radius: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    margin-bottom: 14px;
+}
+
+.login-logo h1 { font-size: 1.6rem; color: var(--text); font-weight: 700; }
+.login-logo p  { color: var(--text-muted); font-size: 0.88rem; margin-top: 4px; }
+
+.login-card .demo-box {
+    background: var(--primary-light);
+    border: 1px solid #c5d0fa;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    font-size: 0.82rem;
+    color: #364fc7;
+}
+.login-card .demo-box strong { display: block; margin-bottom: 4px; }
+.login-card .demo-box code {
+    background: rgba(59,91,219,0.12);
+    padding: 1px 5px; border-radius: 3px;
+    font-family: monospace;
+}
+
+/* ============================================
+   FORM ELEMENTS
+   ============================================ */
+.form-group { margin-bottom: 16px; }
+.form-group label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.83rem;
+    color: var(--secondary);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.93rem;
+    font-family: inherit;
+    color: var(--text);
+    background: #fff;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(59,91,219,0.12);
+}
+.form-row {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+.form-row .form-group { flex: 1; min-width: 150px; }
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+.btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 9px 18px;
+    border: none; border-radius: 8px;
+    font-size: 0.88rem; font-weight: 600;
+    cursor: pointer; font-family: inherit;
+    transition: all 0.18s;
+    white-space: nowrap;
+}
+.btn:active { transform: scale(0.97); }
+.btn-primary  { background: var(--primary); color: #fff; }
+.btn-primary:hover  { background: var(--primary-dark); }
+.btn-success  { background: var(--success); color: #fff; }
+.btn-success:hover  { background: #27843a; }
+.btn-danger   { background: var(--danger);  color: #fff; }
+.btn-danger:hover   { background: #b02525; }
+.btn-secondary{ background: var(--secondary); color: #fff; }
+.btn-secondary:hover{ background: #3d464d; }
+.btn-outline  { background: transparent; border: 1.5px solid var(--primary); color: var(--primary); }
+.btn-outline:hover  { background: var(--primary-light); }
+.btn-sm { padding: 5px 12px; font-size: 0.8rem; }
+.btn-icon { padding: 6px 10px; }
+.btn-full { width: 100%; justify-content: center; padding: 11px; font-size: 0.95rem; }
+
+/* ============================================
+   APP LAYOUT — SIDEBAR + CONTENT
+   ============================================ */
+.app-wrapper { display: flex; min-height: 100vh; }
+
+/* ---- Sidebar ---- */
+.sidebar {
+    width: var(--sidebar-w);
+    background: var(--sidebar-bg);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0;
+    height: 100vh;
+    z-index: 100;
+    transition: transform 0.3s;
+}
+
+.sidebar-brand {
+    padding: 22px 20px 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.sidebar-brand .brand-icon {
+    width: 38px; height: 38px;
+    background: var(--primary);
+    border-radius: 10px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 18px; margin-right: 10px;
+    vertical-align: middle;
+}
+.sidebar-brand .brand-name {
+    font-weight: 700; font-size: 1rem;
+    color: #fff; vertical-align: middle;
+}
+
+.sidebar-user {
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex; align-items: center; gap: 10px;
+}
+.sidebar-user .avatar {
+    width: 36px; height: 36px;
+    background: var(--primary);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.85rem; color: #fff; flex-shrink: 0;
+}
+.sidebar-user .user-info .user-name {
+    font-size: 0.83rem; font-weight: 600; color: #e9ecef;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;
+}
+.sidebar-user .user-info .user-role {
+    font-size: 0.72rem; color: var(--sidebar-text); text-transform: capitalize;
+}
+
+.sidebar-nav { flex: 1; padding: 16px 12px; overflow-y: auto; }
+.nav-section-title {
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 1px;
+    color: rgba(255,255,255,0.3); text-transform: uppercase;
+    padding: 6px 10px; margin-bottom: 4px; margin-top: 10px;
+}
+.nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    color: var(--sidebar-text);
+    font-size: 0.88rem;
+    font-weight: 500;
+    text-decoration: none;
+    margin-bottom: 2px;
+    transition: all 0.18s;
+}
+.nav-item:hover { background: rgba(255,255,255,0.07); color: #fff; text-decoration: none; }
+.nav-item.active {
+    background: var(--sidebar-active);
+    color: #fff;
+    font-weight: 600;
+}
+.nav-item .nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+
+.sidebar-footer {
+    padding: 14px 12px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+}
+
+/* ---- Main Content ---- */
+.main-content {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.topbar {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky; top: 0; z-index: 50;
+}
+.topbar-title { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+
+.page-body { padding: 28px; }
+
+/* ============================================
+   CARDS
+   ============================================ */
+.card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 22px;
+}
+.card-header {
+    padding: 16px 22px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.card-header h2 { font-size: 0.95rem; font-weight: 700; color: var(--text); }
+.card-body { padding: 22px; }
+.card-body.no-pad { padding: 0; }
+
+/* ---- Stat Cards ---- */
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 18px;
+    margin-bottom: 24px;
+}
+.stat-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 22px;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+.stat-card .stat-icon {
+    width: 52px; height: 52px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+}
+.stat-card .stat-icon.blue   { background: var(--primary-light); }
+.stat-card .stat-icon.green  { background: var(--success-bg); }
+.stat-card .stat-icon.orange { background: var(--warning-bg); }
+.stat-card .stat-icon.teal   { background: var(--info-bg); }
+.stat-card .stat-value { font-size: 1.8rem; font-weight: 700; color: var(--text); line-height: 1; }
+.stat-card .stat-label { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* ============================================
+   TABLES
+   ============================================ */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+thead tr { background: #f8f9fa; }
+th {
+    padding: 11px 16px;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    border-bottom: 1.5px solid var(--border);
+    white-space: nowrap;
+}
+td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: middle;
+}
+tbody tr:hover { background: #f8f9fa; }
+tbody tr:last-child td { border-bottom: none; }
+.td-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+
+/* ============================================
+   BADGES & TAGS
+   ============================================ */
+.badge {
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+.badge-pass    { background: var(--success-bg); color: var(--success); }
+.badge-fail    { background: var(--danger-bg);  color: var(--danger); }
+.badge-grade   { background: var(--primary-light); color: var(--primary); }
+.badge-info    { background: var(--info-bg); color: var(--info); }
+.badge-warning { background: var(--warning-bg); color: var(--warning); }
+.badge-instructor { background: var(--warning-bg); color: var(--warning); }
+.badge-student    { background: var(--success-bg); color: var(--success); }
+
+/* ============================================
+   ALERTS / FLASH
+   ============================================ */
+.alert {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+.alert-success { background: var(--success-bg); color: var(--success); border-left: 4px solid var(--success); }
+.alert-error   { background: var(--danger-bg);  color: var(--danger);  border-left: 4px solid var(--danger); }
+.alert-info    { background: var(--info-bg);    color: var(--info);    border-left: 4px solid var(--info); }
+
+/* ============================================
+   MODAL
+   ============================================ */
+.modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: auto; }
+.modal {
+    background: #fff;
+    border-radius: 12px;
+    padding: 28px 30px;
+    width: 480px; max-width: 94%;
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-20px);
+    transition: transform 0.25s;
+    max-height: 90vh; overflow-y: auto;
+}
+.modal-overlay.open .modal { transform: translateY(0); }
+.modal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px;
+}
+.modal-header h3 { font-size: 1rem; font-weight: 700; }
+.modal-close { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--text-muted); padding: 4px; }
+.modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+
+/* ============================================
+   SEARCH BAR
+   ============================================ */
+.search-bar {
+    display: flex; gap: 8px; align-items: center;
+}
+.search-bar input {
+    padding: 8px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-family: inherit;
+    width: 240px;
+    transition: border-color 0.2s;
+}
+.search-bar input:focus { outline: none; border-color: var(--primary); }
+
+/* ============================================
+   GRADE TABLE INSIDE STUDENT PORTAL
+   ============================================ */
+.grade-row-pass td:first-child { border-left: 3px solid var(--success); }
+.grade-row-fail td:first-child { border-left: 3px solid var(--danger); }
+
+.avg-banner {
+    background: linear-gradient(135deg, var(--primary) 0%, #4c6ef5 100%);
+    color: #fff;
+    border-radius: var(--radius);
+    padding: 22px 26px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+.avg-banner .avg-label { font-size: 0.85rem; opacity: 0.85; text-transform: uppercase; letter-spacing: 0.5px; }
+.avg-banner .avg-value { font-size: 2.4rem; font-weight: 700; }
+.avg-banner .avg-letter { font-size: 1.2rem; font-weight: 700; background: rgba(255,255,255,0.2); padding: 4px 14px; border-radius: 20px; }
+
+/* ============================================
+   EMPTY STATE
+   ============================================ */
+.empty-state {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--text-muted);
+}
+.empty-state .empty-icon { font-size: 3rem; margin-bottom: 12px; opacity: 0.4; }
+.empty-state p { font-size: 0.9rem; }
+
+/* ============================================
+   TOAST NOTIFICATION
+   ============================================ */
+.toast-container {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.toast {
+    background: #fff;
+    border-radius: 10px;
+    padding: 14px 18px;
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 260px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transform: translateX(120%);
+    transition: transform 0.3s;
+    border-left: 4px solid var(--primary);
+}
+.toast.show { transform: translateX(0); }
+.toast.success { border-left-color: var(--success); }
+.toast.error   { border-left-color: var(--danger); }
+
+/* ============================================
+   HAMBURGER (mobile)
+   ============================================ */
+.hamburger {
+    display: none;
+    background: none; border: none;
+    font-size: 1.4rem; cursor: pointer; color: var(--text);
+    padding: 4px 8px;
+}
+.sidebar-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 99;
+}
+
+/* ============================================
+   UTILITIES
+   ============================================ */
+.text-muted  { color: var(--text-muted); }
+.text-center { text-align: center; }
+.text-right  { text-align: right; }
+.mt-1 { margin-top: 8px; }
+.mt-2 { margin-top: 16px; }
+.mb-1 { margin-bottom: 8px; }
+.mb-2 { margin-bottom: 16px; }
+.flex { display: flex; }
+.flex-center { display: flex; align-items: center; }
+.gap-1 { gap: 8px; }
+.gap-2 { gap: 14px; }
+.fw-bold { font-weight: 700; }
+.small { font-size: 0.8rem; }
+.divider { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
+.w-100 { width: 100%; }
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+    .sidebar.open {
+        transform: translateX(0);
+    }
+    .sidebar-overlay { display: block; }
+    .main-content { margin-left: 0; }
+    .hamburger { display: block; }
+    .page-body { padding: 16px; }
+    .stat-grid { grid-template-columns: 1fr 1fr; }
+    .form-row { flex-direction: column; }
+    .topbar { padding: 12px 16px; }
+}
+@media (max-width: 480px) {
+    .stat-grid { grid-template-columns: 1fr; }
+    .login-card { padding: 28px 20px; }
+}

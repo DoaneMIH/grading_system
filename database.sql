@@ -1,135 +1,96 @@
--- ============================================
--- Student Grading System v2 - Database Setup
--- With User Roles: instructor & student
--- ============================================
+-- ============================================================
+-- Student Grading System - Full Database
+-- ============================================================
 
-CREATE DATABASE IF NOT EXISTS grading_system;
-USE grading_system;
+CREATE DATABASE IF NOT EXISTS sgs_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE sgs_db;
 
--- ----------------------------------------
--- Users Table: login credentials + role
--- role: 'instructor' or 'student'
--- ----------------------------------------
+-- users table
 CREATE TABLE IF NOT EXISTS users (
     id         INT AUTO_INCREMENT PRIMARY KEY,
-    username   VARCHAR(50) UNIQUE NOT NULL,
-    password   VARCHAR(255) NOT NULL,          -- store hashed passwords (password_hash)
+    name       VARCHAR(100) NOT NULL,
+    email      VARCHAR(150) UNIQUE NOT NULL,
+    password   VARCHAR(255) NOT NULL,
     role       ENUM('instructor','student') NOT NULL,
-    student_id VARCHAR(10) DEFAULT NULL,       -- links to students table if role=student
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- ----------------------------------------
--- Students Table: personal info
--- ----------------------------------------
+-- students table
 CREATE TABLE IF NOT EXISTS students (
-    student_id VARCHAR(10) PRIMARY KEY,
-    first_name VARCHAR(50) NOT NULL,
-    last_name  VARCHAR(50) NOT NULL,
-    email      VARCHAR(100) UNIQUE NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    id         INT AUTO_INCREMENT PRIMARY KEY,
+    user_id    INT UNIQUE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- ----------------------------------------
--- Courses Table: available courses
--- ----------------------------------------
+-- courses table
 CREATE TABLE IF NOT EXISTS courses (
-    course_id   VARCHAR(10) PRIMARY KEY,
-    course_name VARCHAR(100) NOT NULL,
-    units       INT NOT NULL DEFAULT 3
+    id          INT AUTO_INCREMENT PRIMARY KEY,
+    course_id   VARCHAR(20) UNIQUE NOT NULL,
+    course_name VARCHAR(150) NOT NULL,
+    units       TINYINT DEFAULT 3,
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- ----------------------------------------
--- Grades Table: student grades per course
--- ----------------------------------------
+-- grades table
 CREATE TABLE IF NOT EXISTS grades (
     id         INT AUTO_INCREMENT PRIMARY KEY,
-    student_id VARCHAR(10) NOT NULL,
-    course_id  VARCHAR(10) NOT NULL,
+    student_id INT NOT NULL,
+    course_id  INT NOT NULL,
     grade      DECIMAL(5,2) NOT NULL,
-    letter     VARCHAR(2),
-    remarks    VARCHAR(20),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (student_id) REFERENCES students(student_id) ON DELETE CASCADE,
-    FOREIGN KEY (course_id)  REFERENCES courses(course_id)   ON DELETE CASCADE,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
+    FOREIGN KEY (course_id)  REFERENCES courses(id)  ON DELETE CASCADE,
     UNIQUE KEY unique_grade (student_id, course_id)
 );
 
--- ============================================
--- Sample Students
--- ============================================
-INSERT INTO students (student_id, first_name, last_name, email) VALUES
-('STU001', 'Maria',   'Santos',     'maria.santos@school.edu'),
-('STU002', 'Juan',    'dela Cruz',  'juan.delacruz@school.edu'),
-('STU003', 'Ana',     'Reyes',      'ana.reyes@school.edu'),
-('STU004', 'Carlo',   'Mendoza',    'carlo.mendoza@school.edu'),
-('STU005', 'Jasmine', 'Villanueva', 'jasmine.villanueva@school.edu');
+-- ============================================================
+-- SAMPLE DATA
+-- ⚠️  ALL PASSWORDS = "password"
+-- This hash was generated with: password_hash('password', PASSWORD_DEFAULT)
+-- After importing, run reset_passwords.php to change all to "password123"
+-- ============================================================
 
--- ============================================
--- Sample Courses
--- ============================================
+SET @hash = '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi';
+
+INSERT INTO users (name, email, password, role) VALUES
+('Prof. Ricardo Santos', 'instructor@school.edu', @hash, 'instructor'),
+('Maria Clara Santos',   'maria@school.edu',      @hash, 'student'),
+('Juan Dela Cruz',       'juan@school.edu',        @hash, 'student'),
+('Ana Reyes Flores',     'ana@school.edu',         @hash, 'student'),
+('Carlo Mendoza Diaz',   'carlo@school.edu',       @hash, 'student'),
+('Jasmine Villanueva',   'jasmine@school.edu',     @hash, 'student');
+
+INSERT INTO students (user_id) VALUES (2),(3),(4),(5),(6);
+
 INSERT INTO courses (course_id, course_name, units) VALUES
-('CS101',   'Introduction to Computing', 3),
-('MATH101', 'College Algebra',           3),
-('ENG101',  'English Communication',     3),
-('SCI101',  'General Science',           3),
-('PE101',   'Physical Education',        2);
+('CS101',   'Introduction to Computing',    3),
+('MATH101', 'College Algebra',              3),
+('ENG101',  'English Communication',        3),
+('SCI101',  'General Science',              3),
+('PE101',   'Physical Education',           2),
+('IT101',   'Web Development Fundamentals', 3);
 
--- ============================================
--- Sample Grades
--- ============================================
-INSERT INTO grades (student_id, course_id, grade, letter, remarks) VALUES
-('STU001','CS101',   92.5, 'A',  'Passed'),
-('STU001','MATH101', 88.0, 'B+', 'Passed'),
-('STU001','ENG101',  95.0, 'A',  'Passed'),
-('STU002','CS101',   78.0, 'C+', 'Passed'),
-('STU002','MATH101', 65.0, 'D',  'Passed'),
-('STU002','SCI101',  55.0, 'F',  'Failed'),
-('STU003','ENG101',  90.0, 'A-', 'Passed'),
-('STU003','PE101',   85.0, 'B+', 'Passed'),
-('STU003','CS101',   88.5, 'B+', 'Passed'),
-('STU004','MATH101', 72.0, 'C',  'Passed'),
-('STU004','SCI101',  80.5, 'B',  'Passed'),
-('STU004','PE101',   91.0, 'A-', 'Passed'),
-('STU005','CS101',   96.0, 'A',  'Passed'),
-('STU005','ENG101',  93.0, 'A',  'Passed'),
-('STU005','MATH101', 89.5, 'B+', 'Passed');
+INSERT INTO grades (student_id, course_id, grade) VALUES
+(1,1,92.50),(1,2,88.00),(1,3,95.00),(1,4,85.50),
+(2,1,78.00),(2,2,65.00),(2,3,72.50),(2,5,88.00),
+(3,1,90.00),(3,3,87.50),(3,4,93.00),(3,6,96.00),
+(4,2,72.00),(4,4,80.50),(4,5,91.00),(4,6,77.50),
+(5,1,96.00),(5,2,89.50),(5,3,93.00),(5,6,94.50);
 
--- ============================================
--- User Accounts
--- Passwords below are hashed versions of:
---   instructor → password: instructor123
---   student accounts → password: student123
--- Generated with PHP password_hash()
--- ============================================
-
--- 1 Instructor account
-INSERT INTO users (username, password, role) VALUES
-('instructor', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'instructor');
--- Note: the hash above is for 'password' (Laravel default test hash)
--- To use real passwords, run this in PHP:
--- echo password_hash('instructor123', PASSWORD_DEFAULT);
-
--- 5 Student accounts linked to student records
-INSERT INTO users (username, password, role, student_id) VALUES
-('maria.santos',    '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'student', 'STU001'),
-('juan.delacruz',   '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'student', 'STU002'),
-('ana.reyes',       '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'student', 'STU003'),
-('carlo.mendoza',   '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'student', 'STU004'),
-('jasmine.v',       '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'student', 'STU005');
-
--- ============================================
--- DEFAULT LOGIN CREDENTIALS (all use: password)
--- ============================================
--- Role       | Username         | Password
--- -----------|------------------|----------
--- Instructor | instructor       | password
--- Student    | maria.santos     | password
--- Student    | juan.delacruz   | password
--- Student    | ana.reyes        | password
--- Student    | carlo.mendoza    | password
--- Student    | jasmine.v        | password
--- ============================================
--- To change passwords, update them in PHP using:
--- password_hash('your_new_password', PASSWORD_DEFAULT)
--- ============================================
+-- ============================================================
+-- LOGIN CREDENTIALS SUMMARY
+-- ============================================================
+-- Role        | Email                    | Password
+-- ------------|--------------------------|----------
+-- Instructor  | instructor@school.edu    | password
+-- Student     | maria@school.edu         | password
+-- Student     | juan@school.edu          | password
+-- Student     | ana@school.edu           | password
+-- Student     | carlo@school.edu         | password
+-- Student     | jasmine@school.edu       | password
+-- ============================================================
+-- To change passwords to "password123", visit:
+--   http://localhost/sgs/reset_passwords.php
+-- ============================================================
